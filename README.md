@@ -24,7 +24,8 @@ Al crear y comprobar el contenedor, podremos ver que el volumen con nombre conse
 ```
 sudo podman volume create oracle_23ai_datos
 sudo podman run -d --name cont-oracle -p 1521:1521 --restart=always -v oracle_23ai_datos:/opt/oracle/oradata:U container-registry.oracle.com/database/free:23.5.0.0
-sudo podman pssudo podman ps -a
+sudo podman ps
+sudo podman ps -a
 sudo podman logs cont-oracle
 ```
 
@@ -36,11 +37,12 @@ sudo podman exec -it cont-oracle sqlplus / as sysdba
 
 En SQL>, comprueba la PDB y crea el usuario dentro de FREEPDB1:
 ```
-SHOW PDBSALTER SESSION SET CONTAINER = FREEPDB1;
+SHOW PDBS;
+ALTER SESSION SET CONTAINER = FREEPDB1;
 CREATE USER orauser IDENTIFIED BY "TU_CLAVE";
 GRANT CREATE SESSION, CREATE TABLE TO orauser;
 ALTER USER orauser QUOTA 100M ON USERS;
-EXIT
+EXIT;
 ```
 sudo podman exec -it cont-oracle sqlplus orauser@//localhost:1521/FREEPDB1
 2. Desplegar PostgreSQL
@@ -60,7 +62,8 @@ GRANT ALL PRIVILEGES ON DATABASE dbpg TO pguser;
 ```
 Sal de la sesión del usuario postgres y comprueba la conexión:
 ```
-exitpsql -h localhost -U pguser -d dbpg -W
+exit
+psql -h localhost -U pguser -d dbpg -W
 ```
 3. Desplegar MariaDB
 ```
@@ -92,11 +95,6 @@ Tambien, en pg_hba.conf en el mismo directorio, añadiremos una regla limitada a
 host dbpg pguser 'IP_DE_LA_VM'/24 scram-sha-256
 ```
 
-Guarda los dos archivos de configuración y reinicia PostgreSQL, teniendo UFW activo, probaremos desde otra máquina:
-```
-sudo ufw allow from 192.168.1.0/24 to any port 5432 proto tcppsql -h IP_DE_LA_VM -U pguser -d dbpg -W
-```
-
 MariaDB
 Busca el archivo de configuración efectivo, normalmente /etc/mysql/my.cnf o /etc/mysql/mariadb.conf.d/50-server.cnf. En la sección [mysqld] cambia bind-address para escuchar en la IP de la VM:
 ```
@@ -115,11 +113,6 @@ EXIT;
 Vuelve a la terminal y reinicia MariaDB:
 ```
 sudo systemctl restart mariadb
-```
-
-Si UFW está activo, permite solo esa IP en el puerto 3306. Prueba desde el cliente:
-```
-sudo ufw allow from IP_DEL_CLIENTE to any port 3306 proto tcpmariadb -h IP_DE_LA_VM -u muser -p dbm
 ```
 
 **4. Configuración de red realizada, si habilitaste conexiones desde otra máquina.**
