@@ -19,8 +19,7 @@ sudo podman pull container-registry.oracle.com/database/free:23.5.0.0
 sudo podman images
 ```
 
-Crear y comprobar el contenedor
-El volumen con nombre conserva los datos si se para o se recrea el contenedor. Como en el original, se publica el puerto 1521 de la VM; usa una red de prácticas y comprueba el cortafuegos.
+Al crear y comprobar el contenedor, podremos ver que el volumen con nombre conserva los datos si se para o se recrea el contenedor. Recuerda, el se publica el puerto 1521 de la VM; usa una red de prácticas y comprueba el cortafuegos.
 
 ```
 sudo podman volume create oracle_23ai_datos
@@ -37,16 +36,27 @@ sudo podman exec -it cont-oracle sqlplus / as sysdba
 
 En SQL>, comprueba la PDB y crea el usuario dentro de FREEPDB1:
 ```
-SHOW PDBSALTER SESSION SET CONTAINER = FREEPDB1;CREATE USER orauser IDENTIFIED BY "TU_CLAVE";GRANT CREATE SESSION, CREATE TABLE TO orauser;ALTER USER orauser QUOTA 100M ON USERS;EXIT
+SHOW PDBSALTER SESSION SET CONTAINER = FREEPDB1;
+CREATE USER orauser IDENTIFIED BY "TU_CLAVE";
+GRANT CREATE SESSION, CREATE TABLE TO orauser;
+ALTER USER orauser QUOTA 100M ON USERS;
+EXIT
 ```
 sudo podman exec -it cont-oracle sqlplus orauser@//localhost:1521/FREEPDB1
 2. Desplegar PostgreSQL
 ```
-sudo apt updatesudo apt install postgresql postgresql-contrib php-pgsqlsudo systemctl start postgresqlsudo systemctl enable postgresqlsudo -i -u postgrespsql
+sudo apt update
+sudo apt install postgresql postgresql-contrib php-pgsql
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+sudo -i -u postgrespsql
 ```
 En psql:
 ```
-CREATE DATABASE dbpg;CREATE USER pguser WITH PASSWORD 'TU_CLAVE';GRANT ALL PRIVILEGES ON DATABASE dbpg TO pguser;\q
+CREATE DATABASE dbpg;
+CREATE USER pguser WITH PASSWORD 'TU_CLAVE';
+GRANT ALL PRIVILEGES ON DATABASE dbpg TO pguser;
+\q
 ```
 Sal de la sesión del usuario postgres y comprueba la conexión:
 ```
@@ -54,11 +64,18 @@ exitpsql -h localhost -U pguser -d dbpg -W
 ```
 3. Desplegar MariaDB
 ```
-sudo apt updatesudo apt install mariadb-server mariadb-clientsudo systemctl enable --now mariadbsudo mariadb
+sudo apt update
+sudo apt install mariadb-server mariadb-client
+sudo systemctl enable --now mariadb
+sudo mariadb
 ```
 En el indicador de MariaDB:
 ```
-CREATE DATABASE dbm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;CREATE USER 'muser'@'localhost' IDENTIFIED BY 'TU_CLAVE';GRANT ALL PRIVILEGES ON dbm.* TO 'muser'@'localhost';FLUSH PRIVILEGES;EXIT;
+CREATE DATABASE dbm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'muser'@'localhost' IDENTIFIED BY 'TU_CLAVE';
+GRANT ALL PRIVILEGES ON dbm.* TO 'muser'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
 ```
 El original crea 'muser'@'localhost' pero concede permisos a 'muser'@'%': no son la misma cuenta. Aquí se mantiene el mismo origen en ambas instrucciones. Comprueba el acceso local:
 ```
@@ -106,13 +123,15 @@ sudo ufw allow from IP_DEL_CLIENTE to any port 3306 proto tcpmariadb -h IP_DE_LA
 ```
 
 **4. Configuración de red realizada, si habilitaste conexiones desde otra máquina.**
-Para hacer la conexion entre maquinas, decidi habilitar una conexión mediante adaptador puente, Mint tiene una ip 192.168.0.77 y la maquina a la que me conecte (Un linux server
+Para hacer la conexion entre maquinas, decidi habilitar una conexión mediante adaptador puente, Mint tiene una ip 192.168.0.77 y la maquina a la que me conecte (Un linux server con la ip 192.168.0.33)
 
 **5. Problemas encontrados, mensajes de error relevantes y cómo los resolviste; si no hubo incidencias, indícalo.**
+No hubo incidencias tan criticas como se podrían esperar, pero, un detalle fue que cancele accidentalmente la creación del contenedor durante una ronda de prueba, llevando a tener que realizar el proyecto desde el comienzo.
 
 **6. Fuentes consultadas y, si aportas capturas o salidas de comandos, una breve explicación de lo que demuestran.**
-[Información Podman](https://docs.podman.io/en/latest/)
-[Información postgresql](https://www.postgresql.org/docs/16/index.html)
-[Información mariadb](https://mariadb.com/docs/server/mariadb-quickstart-guides/mariadb-remote-connection-guide)
+- [Información Podman](https://docs.podman.io/en/latest/)
+- [Información postgresql](https://www.postgresql.org/docs/16/index.html)
+- [Información mariadb](https://mariadb.com/docs/server/mariadb-quickstart-guides/mariadb-remote-connection-guide)
 
+**EVIDENCIAS**
 [Acceso a la carpeta de evidencias](evidencias)
