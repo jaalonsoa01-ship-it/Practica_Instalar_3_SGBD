@@ -11,7 +11,7 @@
 
 **2. Pasos y comandos que realmente ejecutaste, explicados con tus palabras.**
 
-Para preparar Podman y descargar la imagen ejecute los siguientes comandos
+Para preparar Podman y descargar la imagen ejecutaremos los siguientes comandos
 ```
 sudo apt update
 sudo apt install podman
@@ -123,9 +123,11 @@ sudo ufw allow from IP_DEL_CLIENTE to any port 3306 proto tcpmariadb -h IP_DE_LA
 ```
 
 **4. Configuración de red realizada, si habilitaste conexiones desde otra máquina.**
+
 Para hacer la conexion entre maquinas, decidi habilitar una conexión mediante adaptador puente, Mint tiene una ip 192.168.0.77 y la maquina a la que me conecte (Un linux server con la ip 192.168.0.33)
 
 **5. Problemas encontrados, mensajes de error relevantes y cómo los resolviste; si no hubo incidencias, indícalo.**
+
 No hubo incidencias tan criticas como se podrían esperar, pero, un detalle fue que cancele accidentalmente la creación del contenedor durante una ronda de prueba, llevando a tener que realizar el proyecto desde el comienzo.
 
 **6. Fuentes consultadas y, si aportas capturas o salidas de comandos, una breve explicación de lo que demuestran.**
