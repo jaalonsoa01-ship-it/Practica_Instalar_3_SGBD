@@ -5,7 +5,7 @@
    
 | SGBD | Versión |
 | --- | --- |
-| Oracle 23ai Free | 23.5.0.0 |
+| Oracle 23ai Free | 23.5.0.24.07 |
 | PostgreSQL | 16.15-0ubuntu0.24.04.1 |
 | MariaDB | 15.1 Distribución 10.11.14-MariaDB |
 
